@@ -166,12 +166,15 @@
       user-select: none;
     }
 
-    .option:hover,
-    .option.selected {
-      background: rgba(255,255,255,0.36);
-      border-color: #fff;
-      box-shadow: 0 0 22px rgba(255,255,255,0.24);
-    }
+   .option.selected {
+    background: linear-gradient(135deg,#ff6a00,#ff8c00);
+    border:1px solid #ffb347;
+    color:white;
+    box-shadow:
+        0 0 30px rgba(255,106,0,.55),
+        0 15px 35px rgba(255,106,0,.35);
+    transform:scale(1.02);
+}
 
     .option input {
       width: 18px;
