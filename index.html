@@ -298,8 +298,8 @@
   </section>
 
   <script>
-    const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbzPbpo-QG7yF3RlOlMKUuPjWNhQ65T_mmrpSVamHqP9XcBk8QfoErolWttxzmIaBQ6-/exec";
+    const FORM_URL =
+      "https://docs.google.com/forms/d/e/1FAIpQLSe6lzEsgTwJOuQMmhLTwuTEaDGdxe8BAsNIUIaBBX-NQxx9Ow/formResponse";
 
     const form = document.getElementById("rsvpForm");
     const submitBtn = document.getElementById("submitBtn");
@@ -340,11 +340,12 @@
       submitBtn.textContent = "Enviando...";
 
       const formData = new FormData();
-      formData.append("nome", nome);
-      formData.append("confirmacao", confirmacao);
+
+      formData.append("entry.1498135098", nome);
+      formData.append("entry.877086558", confirmacao);
 
       try {
-        await fetch(SCRIPT_URL, {
+        await fetch(FORM_URL, {
           method: "POST",
           mode: "no-cors",
           body: formData
