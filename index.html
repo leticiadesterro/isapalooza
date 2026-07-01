@@ -7,15 +7,9 @@
   <title>Isapalooza 25ª Edição</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       min-height: 100vh;
@@ -166,15 +160,19 @@
       user-select: none;
     }
 
-   .option.selected {
-    background: linear-gradient(135deg,#ff6a00,#ff8c00);
-    border:1px solid #ffb347;
-    color:white;
-    box-shadow:
+    .option:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .option.selected {
+      background: linear-gradient(135deg,#ff6a00,#ff8c00);
+      border: 1px solid #ffb347;
+      color: white;
+      box-shadow:
         0 0 30px rgba(255,106,0,.55),
         0 15px 35px rgba(255,106,0,.35);
-    transform:scale(1.02);
-}
+      transform: scale(1.02);
+    }
 
     .option input {
       width: 18px;
@@ -223,23 +221,17 @@
       line-height: 1.45;
     }
 
-    .error {
-      color: #ffd1d1;
-    }
+    .error { color: #ffd1d1; }
 
     @media (max-width: 768px) {
-      .hero {
-        padding: 34px 18px;
-      }
+      .hero { padding: 34px 18px; }
 
       .logo {
         width: 88vw;
         max-height: 78svh;
       }
 
-      .form-section {
-        padding: 70px 18px;
-      }
+      .form-section { padding: 70px 18px; }
 
       .form-card {
         width: 100%;
@@ -247,13 +239,8 @@
         border-radius: 24px;
       }
 
-      .form-card h1 {
-        font-size: 26px;
-      }
-
-      .form-card p {
-        font-size: 15px;
-      }
+      .form-card h1 { font-size: 26px; }
+      .form-card p { font-size: 15px; }
 
       input[type="text"],
       button,
@@ -312,7 +299,7 @@
 
   <script>
     const SCRIPT_URL =
-      "https://script.google.com/macros/s/AKfycbwGV9r-bYhEhPv15oh_a_S8FLI_tpJcskY1IENvp0egWhdawSp68uY_9UkpVUxmTV_2/exec";
+      "https://script.google.com/macros/s/AKfycbykwg7sJM_RlpHMQOytBY7fUtxL1ZeCog0Iqx8IxOBiqFDIB325D_Ve8ofM2lvsxhHV/exec";
 
     const form = document.getElementById("rsvpForm");
     const submitBtn = document.getElementById("submitBtn");
@@ -320,14 +307,21 @@
     const options = document.querySelectorAll(".option");
 
     options.forEach(option => {
+      const radio = option.querySelector("input");
+
       option.addEventListener("click", () => {
+        radio.checked = true;
         options.forEach(o => o.classList.remove("selected"));
         option.classList.add("selected");
-        option.querySelector("input").checked = true;
+      });
+
+      radio.addEventListener("change", () => {
+        options.forEach(o => o.classList.remove("selected"));
+        if (radio.checked) option.classList.add("selected");
       });
     });
 
-    form.addEventListener("submit", function(event) {
+    form.addEventListener("submit", async function(event) {
       event.preventDefault();
 
       errorMessage.style.display = "none";
@@ -345,16 +339,17 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "Enviando...";
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({
-          nome: nome,
-          confirmacao: confirmacao
-        })
-      });
+      const formData = new FormData();
+      formData.append("nome", nome);
+      formData.append("confirmacao", confirmacao);
 
-      setTimeout(() => {
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          body: formData
+        });
+
         form.innerHTML = `
           <h1>Resposta enviada!</h1>
           <p>Sua confirmação foi registrada com sucesso.</p>
@@ -367,7 +362,13 @@
             Encerrar
           </button>
         `;
-      }, 1200);
+
+      } catch (error) {
+        errorMessage.textContent = "Não foi possível enviar. Tente novamente.";
+        errorMessage.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Enviar resposta";
+      }
     });
   </script>
 </body>
